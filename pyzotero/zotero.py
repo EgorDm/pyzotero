@@ -40,11 +40,6 @@ import sys
 import requests
 from requests import Request
 import socket
-# horrible monkeypatching for Feedparser < 6 compat
-# Python 3.9 removed decodestring, so we need it FOR NOW
-if sys.version_info[0] > 2 and sys.version_info[1] > 8:
-    import base64
-    base64.decodestring = base64.decodebytes
 import feedparser
 import bibtexparser
 import json
@@ -104,11 +99,6 @@ def token():
     """ Return a unique 32-char write-token
     """
     return str(uuid.uuid4().hex)
-
-
-# Override feedparser's buggy isBase64 method until they fix it
-# Note: this is fixed in v6.x, but we can't switch to it because it doesn't support Python 2.7
-feedparser._FeedParserMixin._isBase64 = ib64_patched
 
 
 def cleanwrap(func):
